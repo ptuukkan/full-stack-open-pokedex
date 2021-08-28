@@ -46,11 +46,6 @@ jobs:
           github.event_name == 'push'
           && !contains(join(env.COMMIT_MESSAGES), '#skip')
   versioning:
-    env:
-      COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-    if: |
-      github.event_name == 'push'
-      && !contains(join(env.COMMIT_MESSAGES), '#skip')
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -60,4 +55,8 @@ jobs:
         uses: anothrNick/github-tag-action@1.33.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
           DEFAULT_BUMP: patch
+        if: |
+          github.event_name == 'push'
+          && !contains(join(env.COMMIT_MESSAGES), '#skip')
